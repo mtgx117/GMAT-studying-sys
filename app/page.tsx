@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   BookOpenCheck,
   Brain,
@@ -52,10 +53,34 @@ const recentMistakes = [
 ];
 
 const quickActions = [
-  { label: "手动录题", icon: FilePlus2, stage: "第 2 阶段接入" },
-  { label: "查看题库", icon: Library, stage: "第 3 阶段接入" },
-  { label: "查看错题本", icon: BookOpenCheck, stage: "第 4 阶段接入" },
-  { label: "上传截图", icon: UploadCloud, stage: "第 6 阶段接入" },
+  {
+    label: "手动录题",
+    icon: FilePlus2,
+    stage: "第 2 阶段可用",
+    href: "/questions/new",
+    enabled: true,
+  },
+  {
+    label: "查看题库",
+    icon: Library,
+    stage: "第 3 阶段接入",
+    href: "#",
+    enabled: false,
+  },
+  {
+    label: "查看错题本",
+    icon: BookOpenCheck,
+    stage: "第 4 阶段接入",
+    href: "#",
+    enabled: false,
+  },
+  {
+    label: "上传截图",
+    icon: UploadCloud,
+    stage: "第 6 阶段接入",
+    href: "#",
+    enabled: false,
+  },
 ];
 
 export default function Home() {
@@ -68,14 +93,14 @@ export default function Home() {
             <div className="flex flex-col gap-3 px-5 py-5 md:px-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  第 1 次验收：项目可启动
+                  第 2 次验收：手动录题前端入口
                 </p>
                 <h1 className="text-2xl font-semibold text-foreground">
                   GMAT Study Agent
                 </h1>
               </div>
               <Badge variant="secondary" className="w-fit">
-                本地占位数据 / 待接入 Supabase
+                本页仍为静态占位看板
               </Badge>
             </div>
           </header>
@@ -96,28 +121,46 @@ export default function Home() {
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   <p className="max-w-3xl text-sm leading-6 text-foreground">
-                    先录入最近做错的 3 道题，补齐“正确答案、我的答案、耗时、错因标签”。
+                    先录入最近做错的 3 道题，补齐正确答案、我的答案、耗时和错因标签。
                     当前看板只展示本地占位数据，不代表真实学习进度。
                   </p>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {quickActions.map((action) => (
-                      <Button
-                        key={action.label}
-                        variant="outline"
-                        className="h-auto justify-start gap-3 p-3"
-                        disabled
-                      >
-                        <action.icon data-icon="inline-start" />
-                        <span className="flex min-w-0 flex-col items-start gap-1 text-left">
-                          <span className="text-sm font-medium">
-                            {action.label}
+                    {quickActions.map((action) => {
+                      const Icon = action.icon;
+                      const content = (
+                        <>
+                          <Icon data-icon="inline-start" />
+                          <span className="flex min-w-0 flex-col items-start gap-1 text-left">
+                            <span className="text-sm font-medium">
+                              {action.label}
+                            </span>
+                            <span className="text-xs font-normal text-muted-foreground">
+                              {action.stage}
+                            </span>
                           </span>
-                          <span className="text-xs font-normal text-muted-foreground">
-                            {action.stage}
-                          </span>
-                        </span>
-                      </Button>
-                    ))}
+                        </>
+                      );
+
+                      return action.enabled ? (
+                        <Button
+                          key={action.label}
+                          asChild
+                          variant="outline"
+                          className="h-auto justify-start gap-3 p-3"
+                        >
+                          <Link href={action.href}>{content}</Link>
+                        </Button>
+                      ) : (
+                        <Button
+                          key={action.label}
+                          variant="outline"
+                          className="h-auto justify-start gap-3 p-3"
+                          disabled
+                        >
+                          {content}
+                        </Button>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -126,19 +169,19 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle>阶段状态组件</CardTitle>
                   <CardDescription>
-                    本阶段预置通用 empty/loading/error/success 模式。
+                    本阶段复用通用 empty/loading/error/success 模式。
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                   <StatusPanel
                     state="empty"
-                    title="暂无真实数据"
-                    description="第 2 阶段接入数据库后，这里会显示题库和练习记录。"
+                    title="暂无真实看板数据"
+                    description="第 5 阶段再把首页看板接入 Supabase 统计。"
                   />
                   <StatusPanel
                     state="success"
-                    title="骨架已准备"
-                    description="当前首页、导航、卡片和图表均为本地静态占位。"
+                    title="手动录题入口已开放"
+                    description="可以从首页快捷按钮或左侧导航进入 /questions/new。"
                   />
                 </CardContent>
               </Card>
@@ -148,13 +191,13 @@ export default function Home() {
               <MetricCard
                 title="总题数"
                 value="24"
-                description="占位值，待第 2 阶段入库后替换"
+                description="占位值，未接入真实题库数据"
                 icon={ClipboardList}
               />
               <MetricCard
                 title="正确率"
                 value="68%"
-                description="占位值，待第 5 阶段真实统计"
+                description="占位值，第 5 阶段接入真实统计"
                 icon={BookOpenCheck}
               />
               <MetricCard
@@ -213,7 +256,7 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle>最近错题</CardTitle>
                   <CardDescription>
-                    静态列表，只用于第 1 阶段验证首页布局。
+                    静态列表，只用于验证首页布局。
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -239,19 +282,19 @@ export default function Home() {
                 <CardHeader>
                   <CardTitle>未接入能力</CardTitle>
                   <CardDescription>
-                    本阶段明确不连接 Supabase、OCR 或 AI。
+                    本阶段不连接截图上传、OCR 或 AI。
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
                   <StatusPanel
                     state="loading"
-                    title="数据同步待接入"
-                    description="第 2 阶段再创建 Supabase migration 和入库接口。"
+                    title="真实看板数据待接入"
+                    description="第 5 阶段再实现 Supabase 统计接口。"
                   />
                   <StatusPanel
                     state="error"
                     title="AI/OCR 未启用"
-                    description="这是预期状态，手动学习闭环不会依赖 AI/OCR。"
+                    description="这是预期状态，手动录题流程不依赖 AI/OCR。"
                   />
                 </CardContent>
               </Card>

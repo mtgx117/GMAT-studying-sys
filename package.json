@@ -11,6 +11,7 @@
   "dependencies": {
     "@radix-ui/react-separator": "latest",
     "@radix-ui/react-slot": "latest",
+    "@supabase/supabase-js": "^2.105.4",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "lucide-react": "latest",
