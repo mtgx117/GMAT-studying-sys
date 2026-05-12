@@ -26,6 +26,49 @@ export type CreateQuestionResponse = {
   attemptId: string | null;
 };
 
+export type QuestionAttempt = {
+  id: string;
+  questionId: string;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  timeSpentSeconds: number | null;
+  errorTags: string[];
+  note: string | null;
+  attemptedAt: string;
+  createdAt: string;
+};
+
+export type QuestionListItem = {
+  id: string;
+  section: Section;
+  questionType: string;
+  stem: string;
+  choices: string[];
+  correctAnswer: string;
+  explanation: string | null;
+  knowledgeTags: string[];
+  source: QuestionSource;
+  createdAt: string;
+  updatedAt: string;
+  latestAttempt: QuestionAttempt | null;
+  attemptCount: number;
+  incorrectAttemptCount: number;
+  isWrong: boolean;
+};
+
+export type QuestionListResponse = {
+  questions: QuestionListItem[];
+};
+
+export type QuestionDetailResponse = {
+  question: Omit<
+    QuestionListItem,
+    "latestAttempt" | "attemptCount" | "incorrectAttemptCount" | "isWrong"
+  >;
+  attempts: QuestionAttempt[];
+};
+
 export type ValidationResult<T> =
   | { ok: true; data: T }
   | { ok: false; errors: string[] };
