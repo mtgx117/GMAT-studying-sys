@@ -14,6 +14,73 @@
 - 手动录题是第一入口。
 - AI/OCR 不能阻塞题库、练习记录、错题统计和基础看板。
 
+## 当前阶段
+
+当前代码对应第 1 次验收：项目可启动。
+
+已包含：
+
+- Next.js App Router + TypeScript 应用骨架。
+- Tailwind CSS + shadcn/ui 基础结构。
+- lucide-react 图标和 Recharts 占位图表。
+- 左侧导航 + 主内容卡片布局。
+- 首页静态占位看板：今日建议、总题数、正确率、最近 7 天练习量、Top 薄弱点、最近错题、快捷按钮。
+- `.env.example` 环境变量模板。
+
+本阶段不包含：
+
+- Supabase 数据库、migration 或 API。
+- 手动录题入库。
+- OCR/AI 识别。
+- 登录或线上访问密码逻辑。
+
+首页中的数字和列表都标注为本地占位数据，后续第 2 阶段起逐步接入真实数据。
+
+## 本地启动
+
+前置要求：
+
+- Node.js 20 或更新版本。
+- npm。Windows PowerShell 如果拦截 `npm.ps1`，可以使用 `npm.cmd`。
+
+安装依赖：
+
+```bash
+npm install
+```
+
+启动开发服务器：
+
+```bash
+npm run dev
+```
+
+默认访问：
+
+```text
+http://localhost:3000
+```
+
+检查命令：
+
+```bash
+npm run lint
+npm run build
+```
+
+Windows PowerShell 如遇执行策略限制，可改用：
+
+```bash
+npm.cmd install
+npm.cmd run dev
+npm.cmd run lint
+npm.cmd run build
+```
+
+## 环境变量
+
+复制 `.env.example` 作为本地参考即可。本阶段不会读取 Supabase、DeepSeek 或 OCR 配置，也不要提交 `.env.local`。
+
 ## 访问控制
 
 本地运行可以不登录。线上部署至少预留：
