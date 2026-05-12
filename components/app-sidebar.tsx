@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   BookOpenCheck,
   ClipboardList,
@@ -10,12 +11,30 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 const navItems = [
-  { label: "学习看板", icon: Home, status: "当前" },
-  { label: "手动录题", icon: ClipboardList, status: "第 2 阶段" },
-  { label: "题库", icon: Library, status: "第 3 阶段" },
-  { label: "错题本", icon: BookOpenCheck, status: "第 4 阶段" },
-  { label: "截图上传", icon: UploadCloud, status: "第 6 阶段" },
-  { label: "设置", icon: Settings, status: "后续" },
+  { label: "学习看板", href: "/", icon: Home, status: "当前", enabled: true },
+  {
+    label: "手动录题",
+    href: "/questions/new",
+    icon: ClipboardList,
+    status: "第 2 阶段",
+    enabled: true,
+  },
+  { label: "题库", href: "#", icon: Library, status: "第 3 阶段", enabled: false },
+  {
+    label: "错题本",
+    href: "#",
+    icon: BookOpenCheck,
+    status: "第 4 阶段",
+    enabled: false,
+  },
+  {
+    label: "截图上传",
+    href: "#",
+    icon: UploadCloud,
+    status: "第 6 阶段",
+    enabled: false,
+  },
+  { label: "设置", href: "#", icon: Settings, status: "后续", enabled: false },
 ];
 
 export function AppSidebar() {
@@ -39,13 +58,8 @@ export function AppSidebar() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const isCurrent = item.status === "当前";
-
-          return (
-            <div
-              key={item.label}
-              className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm data-[current=true]:bg-secondary"
-              data-current={isCurrent}
-            >
+          const content = (
+            <>
               <div className="flex min-w-0 items-center gap-3">
                 <Icon className="size-4 text-muted-foreground" />
                 <span className="truncate font-medium">{item.label}</span>
@@ -53,13 +67,35 @@ export function AppSidebar() {
               <Badge variant={isCurrent ? "default" : "outline"}>
                 {item.status}
               </Badge>
-            </div>
+            </>
+          );
+
+          if (!item.enabled) {
+            return (
+              <div
+                key={item.label}
+                className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm opacity-60"
+              >
+                {content}
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm hover:bg-secondary data-[current=true]:bg-secondary"
+              data-current={isCurrent}
+            >
+              {content}
+            </Link>
           );
         })}
       </nav>
       <div className="border-t px-5 py-4">
         <p className="text-xs leading-5 text-muted-foreground">
-          第 1 阶段只提供静态首页和布局；数据写入、API、OCR/AI 均后置。
+          第 2 阶段开放手动录题入口；题库、详情、截图上传和 AI/OCR 仍按后续验收推进。
         </p>
       </div>
     </aside>

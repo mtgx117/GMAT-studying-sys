@@ -16,7 +16,7 @@
 
 ## 当前阶段
 
-当前代码对应第 1 次验收：项目可启动。
+当前代码对应第 2 次验收：Supabase 数据库和手动录题入库。
 
 已包含：
 
@@ -26,15 +26,21 @@
 - 左侧导航 + 主内容卡片布局。
 - 首页静态占位看板：今日建议、总题数、正确率、最近 7 天练习量、Top 薄弱点、最近错题、快捷按钮。
 - `.env.example` 环境变量模板。
+- Supabase migration：`questions` 和 `attempts`。
+- `POST /api/questions` 服务端接口。
+- `/questions/new` 手动录题页。
+- 手动录题表单字段：科目、题型、题干、选项、正确答案、我的答案、是否正确、耗时、知识点标签、错因标签、备注。
 
 本阶段不包含：
 
-- Supabase 数据库、migration 或 API。
-- 手动录题入库。
+- 题库列表页。
+- 题目详情页。
+- 截图上传。
 - OCR/AI 识别。
+- AI 错题分析和练习推荐。
 - 登录或线上访问密码逻辑。
 
-首页中的数字和列表都标注为本地占位数据，后续第 2 阶段起逐步接入真实数据。
+首页中的数字和列表仍是本地占位数据。第 2 阶段只验证手动录题提交到 `POST /api/questions`，真实写入需要配置 Supabase 环境变量并应用 migration。
 
 ## 本地启动
 
@@ -79,7 +85,11 @@ npm.cmd run build
 
 ## 环境变量
 
-复制 `.env.example` 作为本地参考即可。本阶段不会读取 Supabase、DeepSeek 或 OCR 配置，也不要提交 `.env.local`。
+复制 `.env.example` 作为本地参考即可。第 2 阶段会在服务端读取 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY` 来保存题目和首次练习记录。
+
+未配置 Supabase 时，`POST /api/questions` 会返回明确的 `503 supabase_not_configured`，手动录题页面会显示错误，不会崩溃。
+
+不要提交 `.env.local`。
 
 ## 访问控制
 
