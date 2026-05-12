@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 const navItems = [
-  { label: "学习看板", href: "/", icon: Home, status: "当前", enabled: true },
+  { label: "学习看板", href: "/", icon: Home, status: "第 5 阶段", enabled: true },
   {
     label: "手动录题",
     href: "/questions/new",
@@ -19,7 +19,13 @@ const navItems = [
     status: "第 2 阶段",
     enabled: true,
   },
-  { label: "题库", href: "#", icon: Library, status: "第 3 阶段", enabled: false },
+  {
+    label: "题库",
+    href: "/questions",
+    icon: Library,
+    status: "第 3 阶段",
+    enabled: true,
+  },
   {
     label: "错题本",
     href: "#",
@@ -57,14 +63,13 @@ export function AppSidebar() {
       <nav className="flex flex-1 flex-col gap-1 px-3 py-4">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isCurrent = item.status === "当前";
           const content = (
             <>
               <div className="flex min-w-0 items-center gap-3">
                 <Icon className="size-4 text-muted-foreground" />
                 <span className="truncate font-medium">{item.label}</span>
               </div>
-              <Badge variant={isCurrent ? "default" : "outline"}>
+              <Badge variant={item.enabled ? "outline" : "secondary"}>
                 {item.status}
               </Badge>
             </>
@@ -85,8 +90,7 @@ export function AppSidebar() {
             <Link
               key={item.label}
               href={item.href}
-              className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm hover:bg-secondary data-[current=true]:bg-secondary"
-              data-current={isCurrent}
+              className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm hover:bg-secondary"
             >
               {content}
             </Link>
@@ -95,7 +99,7 @@ export function AppSidebar() {
       </nav>
       <div className="border-t px-5 py-4">
         <p className="text-xs leading-5 text-muted-foreground">
-          第 2 阶段开放手动录题入口；题库、详情、截图上传和 AI/OCR 仍按后续验收推进。
+          当前推进第 3 次验收：题库列表和题目详情。截图、OCR、AI 和推荐能力仍按后续阶段推进。
         </p>
       </div>
     </aside>
