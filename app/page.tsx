@@ -68,11 +68,18 @@ const quickActions = [
     enabled: true,
   },
   {
+    label: "开始练习",
+    icon: ClipboardList,
+    stage: "第 4 阶段接入",
+    href: "/practice",
+    enabled: true,
+  },
+  {
     label: "查看错题本",
     icon: BookOpenCheck,
     stage: "第 4 阶段接入",
-    href: "#",
-    enabled: false,
+    href: "/mistakes",
+    enabled: true,
   },
   {
     label: "上传截图",

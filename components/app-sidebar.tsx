@@ -27,11 +27,18 @@ const navItems = [
     enabled: true,
   },
   {
+    label: "练习",
+    href: "/practice",
+    icon: ClipboardList,
+    status: "第 4 阶段",
+    enabled: true,
+  },
+  {
     label: "错题本",
-    href: "#",
+    href: "/mistakes",
     icon: BookOpenCheck,
     status: "第 4 阶段",
-    enabled: false,
+    enabled: true,
   },
   {
     label: "截图上传",
