@@ -192,11 +192,17 @@ export function QuestionDetail({ questionId }: QuestionDetailProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
+      <div className="flex flex-wrap gap-2">
         <Button asChild variant="outline" size="sm">
           <Link href="/questions">
             <ArrowLeft className="size-4" />
             返回题库
+          </Link>
+        </Button>
+        <Button asChild size="sm">
+          <Link href={`/practice?questionId=${encodeURIComponent(questionId)}`}>
+            <ListChecks className="size-4" />
+            练习本题
           </Link>
         </Button>
       </div>
