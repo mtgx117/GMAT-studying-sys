@@ -75,7 +75,7 @@ function sectionLabel(section: Section) {
 }
 
 function formatDate(value: string | undefined) {
-  if (!value) return "No date";
+  if (!value) return "未记录";
 
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -91,14 +91,14 @@ function formatDate(value: string | undefined) {
 }
 
 function formatTimeSpent(seconds: number | null) {
-  if (seconds === null) return "Not recorded";
-  if (seconds < 60) return `${seconds}s`;
+  if (seconds === null) return "未记录";
+  if (seconds < 60) return `${seconds} 秒`;
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return remainingSeconds > 0
-    ? `${minutes}m ${remainingSeconds}s`
-    : `${minutes}m`;
+    ? `${minutes} 分 ${remainingSeconds} 秒`
+    : `${minutes} 分`;
 }
 
 function buildQuery(filters: Filters) {
@@ -123,10 +123,10 @@ function readErrorMessage(body: unknown, fallback: string) {
   const message = typeof record.message === "string" ? record.message : "";
 
   if (code === "supabase_not_configured") {
-    return "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the server, then reload the mistake notebook.";
+    return "Supabase 未配置。请在服务端设置 SUPABASE_URL 和 SUPABASE_SERVICE_ROLE_KEY 后重试。";
   }
 
-  return message || (code ? `Mistake notebook failed: ${code}` : fallback);
+  return message || (code ? `错题本加载失败：${code}` : fallback);
 }
 
 export function MistakeNotebook() {
@@ -163,14 +163,14 @@ export function MistakeNotebook() {
           throw new Error(
             readErrorMessage(
               body,
-              "Mistake notebook failed to load. Check the API response and retry.",
+              "错题本加载失败，请检查接口响应后重试。",
             ),
           );
         }
 
         if (!body || !("mistakes" in body) || !Array.isArray(body.mistakes)) {
           throw new Error(
-            "The mistake notebook API response is invalid: missing mistakes array.",
+            "错题本接口响应格式异常，未返回 mistakes 数组。",
           );
         }
 
@@ -183,7 +183,7 @@ export function MistakeNotebook() {
           setError(
             loadError instanceof Error
               ? loadError.message
-              : "Mistake notebook failed to load. Retry after checking the API.",
+              : "错题本加载失败，请稍后重试。",
           );
         }
       } finally {
@@ -222,17 +222,16 @@ export function MistakeNotebook() {
             <div className="flex flex-col gap-1">
               <CardTitle className="flex items-center gap-2">
                 <Filter className="size-5 text-primary" />
-                Mistake filters
+                错题筛选
               </CardTitle>
               <CardDescription>
-                Filter wrong questions by section, question type, knowledge
-                point, and mistake reason without depending on AI analysis.
+                按科目、题型、知识点和错因筛选已有错误记录的题目。
               </CardDescription>
             </div>
             <Badge variant="secondary" className="w-fit">
               {activeFilterCount > 0
-                ? `${activeFilterCount} active filters`
-                : "No filters"}
+                ? `${activeFilterCount} 个筛选条件`
+                : "未筛选"}
             </Badge>
           </div>
         </CardHeader>
@@ -244,7 +243,7 @@ export function MistakeNotebook() {
               onChange={(event) => updateFilter("subject", event.target.value)}
               disabled={isLoading}
             >
-              <option value="">All sections</option>
+              <option value="">全部科目</option>
               <option value="quant">Quant</option>
               <option value="verbal">Verbal</option>
               <option value="data_insights">Data Insights</option>
@@ -255,7 +254,7 @@ export function MistakeNotebook() {
               onChange={(event) =>
                 updateFilter("questionType", event.target.value)
               }
-              placeholder="Question type"
+              placeholder="题型"
               disabled={isLoading}
             />
             <input
@@ -264,7 +263,7 @@ export function MistakeNotebook() {
               onChange={(event) =>
                 updateFilter("knowledgePoint", event.target.value)
               }
-              placeholder="Knowledge point"
+              placeholder="知识点"
               disabled={isLoading}
             />
             <input
@@ -273,7 +272,7 @@ export function MistakeNotebook() {
               onChange={(event) =>
                 updateFilter("mistakeReason", event.target.value)
               }
-              placeholder="Mistake reason"
+              placeholder="错因"
               disabled={isLoading}
             />
             <div className="flex gap-2">
@@ -283,7 +282,7 @@ export function MistakeNotebook() {
                 ) : (
                   <Search className="size-4" />
                 )}
-                Filter
+                筛选
               </Button>
               <Button
                 type="button"
@@ -291,7 +290,7 @@ export function MistakeNotebook() {
                 size="icon"
                 onClick={resetFilters}
                 disabled={isLoading && activeFilterCount === 0}
-                aria-label="Reset filters"
+                aria-label="重置筛选"
               >
                 <RotateCcw className="size-4" />
               </Button>
@@ -303,15 +302,15 @@ export function MistakeNotebook() {
       {isLoading ? (
         <StatusPanel
           state="loading"
-          title="Loading mistake notebook"
-          description="Reading wrong attempts from /api/mistakes with the current filters."
+          title="正在加载错题本"
+          description="正在读取错误练习记录和当前筛选条件。"
         />
       ) : null}
 
       {error ? (
         <Alert variant="destructive">
           <AlertCircle className="size-4" />
-          <AlertTitle>Mistake notebook failed to load</AlertTitle>
+          <AlertTitle>错题本加载失败</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : null}
@@ -319,8 +318,8 @@ export function MistakeNotebook() {
       {!isLoading && !error && mistakes.length === 0 ? (
         <StatusPanel
           state="empty"
-          title="No matching mistakes"
-          description="Adjust filters or add wrong practice records to build the mistake notebook."
+          title="暂无匹配错题"
+          description="可以调整筛选条件，或先在练习页提交错误记录。"
         />
       ) : null}
 
@@ -329,11 +328,10 @@ export function MistakeNotebook() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BookOpenCheck className="size-5 text-primary" />
-              Wrong questions
+              错题列表
             </CardTitle>
             <CardDescription>
-              {mistakes.length} questions with wrong attempts. Open a question
-              to review its full detail page.
+              共 {mistakes.length} 道有错误记录的题目，点击进入详情复盘。
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
@@ -358,10 +356,10 @@ export function MistakeNotebook() {
                           {item.question.questionType}
                         </Badge>
                         <Badge variant="destructive">
-                          Wrong {item.incorrectAttemptCount}
+                          错误 {item.incorrectAttemptCount}
                         </Badge>
                         <Badge variant="secondary">
-                          Attempts {item.attemptCount}
+                          记录 {item.attemptCount}
                         </Badge>
                       </div>
                       <p className="line-clamp-2 text-sm leading-6 text-foreground">
@@ -380,24 +378,24 @@ export function MistakeNotebook() {
                       ))
                     ) : (
                       <span className="text-xs text-muted-foreground">
-                        No knowledge point tags
+                        未标记知识点
                       </span>
                     )}
                   </div>
 
                   <div className="grid gap-2 rounded-md bg-secondary/40 p-3 text-xs text-muted-foreground md:grid-cols-4">
                     <span>
-                      Latest wrong:{" "}
+                      最近错误：
                       {formatDate(latestWrongAttempt?.attemptedAt)}
                     </span>
                     <span>
-                      My answer: {latestWrongAttempt?.userAnswer || "N/A"}
+                      我的答案：{latestWrongAttempt?.userAnswer || "未记录"}
                     </span>
                     <span>
-                      Correct: {latestWrongAttempt?.correctAnswer || "N/A"}
+                      正确答案：{latestWrongAttempt?.correctAnswer || "未记录"}
                     </span>
                     <span>
-                      Time:{" "}
+                      耗时：
                       {formatTimeSpent(
                         latestWrongAttempt?.timeSpentSeconds ?? null,
                       )}
@@ -414,7 +412,7 @@ export function MistakeNotebook() {
                       ))
                     ) : (
                       <span className="text-xs text-muted-foreground">
-                        No mistake reason tags
+                        未记录错因
                       </span>
                     )}
                   </div>

@@ -60,18 +60,32 @@ function buildQuestionsUrl(filters: Filters) {
   return query ? `/api/questions?${query}` : "/api/questions";
 }
 
-function readApiError(body: { error?: string; message?: string } | null) {
-  if (body?.error === "supabase_not_configured") {
+function readApiError(body: unknown) {
+  const record =
+    typeof body === "object" && body !== null
+      ? (body as { error?: unknown; message?: unknown })
+      : null;
+  const error = typeof record?.error === "string" ? record.error : "";
+  const message = typeof record?.message === "string" ? record.message : "";
+
+  if (error === "supabase_not_configured") {
     return "Supabase 未配置。请在服务端配置 SUPABASE_URL 和 SUPABASE_SERVICE_ROLE_KEY 后重试。";
   }
 
-  return body?.message || body?.error || "请求失败，请稍后重试。";
+  return message || error || "请求失败，请稍后重试。";
 }
 
 function sectionLabel(section: QuestionListItem["section"]) {
   if (section === "quant") return "Quant";
   if (section === "verbal") return "Verbal";
   return "Data Insights";
+}
+
+function splitTags(value: string) {
+  return value
+    .split(/[,，\n]/)
+    .map((tag) => tag.trim())
+    .filter(Boolean);
 }
 
 export function PracticeSession({ initialQuestionId }: PracticeSessionProps) {
@@ -84,6 +98,8 @@ export function PracticeSession({ initialQuestionId }: PracticeSessionProps) {
   const [detail, setDetail] = useState<QuestionDetailResponse | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState("");
+  const [errorTags, setErrorTags] = useState("");
+  const [note, setNote] = useState("");
   const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(
     null,
   );
@@ -100,6 +116,8 @@ export function PracticeSession({ initialQuestionId }: PracticeSessionProps) {
   function resetAnswer() {
     startedAtRef.current = Date.now();
     setAnswer("");
+    setErrorTags("");
+    setNote("");
     setSelectedChoiceIndex(null);
     setResult(null);
   }
@@ -209,8 +227,8 @@ export function PracticeSession({ initialQuestionId }: PracticeSessionProps) {
             userAnswer: answer.trim(),
             selectedChoiceIndex,
             timeSpentSeconds,
-            errorTags: [],
-            note: null,
+            errorTags: splitTags(errorTags),
+            note: note.trim() || null,
           }),
         },
       );
@@ -420,6 +438,29 @@ export function PracticeSession({ initialQuestionId }: PracticeSessionProps) {
                   disabled={isSubmitting || Boolean(result)}
                 />
               )}
+
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">错因标签</label>
+                  <input
+                    className={inputClassName}
+                    value={errorTags}
+                    onChange={(event) => setErrorTags(event.target.value)}
+                    placeholder="用逗号分隔，例如 审题遗漏, 时间压力"
+                    disabled={isSubmitting || Boolean(result)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">练习备注</label>
+                  <input
+                    className={inputClassName}
+                    value={note}
+                    onChange={(event) => setNote(event.target.value)}
+                    placeholder="记录这次作答的卡点"
+                    disabled={isSubmitting || Boolean(result)}
+                  />
+                </div>
+              </div>
 
               {result ? (
                 <Alert>
