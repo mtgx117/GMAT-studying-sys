@@ -63,9 +63,9 @@ const quickActions = [
   {
     label: "查看题库",
     icon: Library,
-    stage: "第 3 阶段接入",
-    href: "#",
-    enabled: false,
+    stage: "第 3 阶段可用",
+    href: "/questions",
+    enabled: true,
   },
   {
     label: "查看错题本",
@@ -93,7 +93,7 @@ export default function Home() {
             <div className="flex flex-col gap-3 px-5 py-5 md:px-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium text-muted-foreground">
-                  第 2 次验收：手动录题前端入口
+                  第 3 次验收：题库列表和题目详情
                 </p>
                 <h1 className="text-2xl font-semibold text-foreground">
                   GMAT Study Agent
@@ -180,8 +180,8 @@ export default function Home() {
                   />
                   <StatusPanel
                     state="success"
-                    title="手动录题入口已开放"
-                    description="可以从首页快捷按钮或左侧导航进入 /questions/new。"
+                    title="手动录题和题库入口已开放"
+                    description="可以从首页快捷按钮或左侧导航进入 /questions/new 和 /questions。"
                   />
                 </CardContent>
               </Card>
