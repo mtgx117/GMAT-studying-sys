@@ -16,7 +16,7 @@
 
 ## 当前阶段
 
-当前代码对应第 3 次验收：题库列表和题目详情。
+当前代码对应第 4 次验收：练习模式、练习记录和基础错题本。
 
 已包含：
 
@@ -35,17 +35,21 @@
 - `/questions` 题库列表页。
 - `/questions/{id}` 题目详情页。
 - 首页和侧边栏可进入题库。
+- `POST /api/questions/{id}/attempts` 新增练习记录接口，服务端自动判分。
+- `GET /api/mistakes` 基础错题本接口。
+- `/practice` 连续练习页，支持题库顺序练习和单题练习。
+- `/mistakes` 基础错题本页。
+- 首页、侧边栏和题目详情页可进入练习和错题本。
 
 本阶段不包含：
 
-- 新增练习记录的独立流程。
-- 基础错题本页。
+- 真实首页看板统计。
 - 截图上传。
 - OCR/AI 识别。
 - AI 错题分析和练习推荐。
 - 登录或线上访问密码逻辑。
 
-首页中的数字和列表仍是本地占位数据。第 3 阶段可查看题库和题目详情；真实数据读写需要配置 Supabase 环境变量并应用 migration。
+首页中的数字和列表仍是本地占位数据。第 4 阶段可进入练习模式并查看基础错题本；真实数据读写需要配置 Supabase 环境变量并应用 migration。
 
 ## 本地启动
 
@@ -90,9 +94,9 @@ npm.cmd run build
 
 ## 环境变量
 
-复制 `.env.example` 作为本地参考即可。当前阶段会在服务端读取 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY` 来保存题目、首次练习记录、读取题库和读取题目详情。
+复制 `.env.example` 作为本地参考即可。当前阶段会在服务端读取 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY` 来保存题目、保存练习记录、读取题库、读取题目详情和读取错题本。
 
-未配置 Supabase 时，`POST /api/questions`、`GET /api/questions` 和 `GET /api/questions/{id}` 会返回明确的 `503 supabase_not_configured`，页面会显示错误状态，不会崩溃。
+未配置 Supabase 时，`POST /api/questions`、`GET /api/questions`、`GET /api/questions/{id}`、`POST /api/questions/{id}/attempts` 和 `GET /api/mistakes` 会返回明确的 `503 supabase_not_configured`，页面会显示错误状态，不会崩溃。
 
 不要提交 `.env.local`。
 

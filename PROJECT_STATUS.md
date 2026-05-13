@@ -4,7 +4,7 @@ Last updated: 2026-05-13
 
 ## Current Accepted Stage
 
-Stage 3: Question library and question detail pages.
+Stage 4: Practice records and mistake marking.
 
 Accepted deliverables:
 
@@ -23,7 +23,13 @@ Accepted deliverables:
 - `/questions` question library page.
 - `/questions/{id}` question detail page.
 - Home page question library shortcut enabled.
-- README local startup and Stage 3 acceptance notes.
+- `POST /api/questions/{id}/attempts` for creating practice records on existing questions.
+- Server-side answer matching for practice attempts.
+- `GET /api/mistakes` for the basic mistake notebook.
+- `/practice` continuous and single-question practice page.
+- `/mistakes` basic mistake notebook page.
+- Home page, sidebar, and question detail entry points for practice and mistakes.
+- README local startup and Stage 4 acceptance notes.
 
 Validation completed:
 
@@ -34,18 +40,22 @@ Validation completed:
 - `POST /api/questions` without Supabase env returned `503 supabase_not_configured`.
 - `GET /api/questions` without Supabase env returned `503 supabase_not_configured`.
 - `GET /api/questions/{id}` without Supabase env returned `503 supabase_not_configured`.
-- Independent QA/Review Agent found no blocking issues for Stage 3.
+- `POST /api/questions/{id}/attempts` without Supabase env returned `503 supabase_not_configured`.
+- `GET /api/mistakes` without Supabase env returned `503 supabase_not_configured`.
+- `http://localhost:3000/practice` returned HTTP 200.
+- `http://localhost:3000/mistakes` returned HTTP 200.
+- Independent QA/Review Agent found no blocking issues for Stage 4.
 
 ## Next Stage
 
-Stage 4: Practice records and mistake marking.
+Stage 5: Basic learning dashboard.
 
 Allowed scope:
 
-- Add an explicit practice record creation flow for existing questions.
-- Save my answer, correct answer, correctness, time spent, mistake reason tags, and notes.
-- Mark questions as wrong based on attempts.
-- Add a basic mistake notebook entry point if needed by the Stage 4 acceptance criteria.
+- Implement dashboard statistics from the real database.
+- Replace homepage placeholder totals, accuracy, recent 7-day practice volume, Top weak spots, and recent mistakes.
+- Keep quick actions linked to existing manual entry, question library, practice, and mistake notebook pages.
+- Generate simple rule-based today suggestion from existing data.
 
 Explicitly out of scope:
 
@@ -54,12 +64,12 @@ Explicitly out of scope:
 - AI mistake analysis.
 - Practice recommendations.
 
-## Required Agent Setup For Stage 4
+## Required Agent Setup For Stage 5
 
 - Project Organizer: current thread, no business code.
-- Main Development Agent: integrates Stage 4.
-- Backend/API Agent: attempt creation and mistake marking endpoints.
-- Frontend Agent: practice record UI and mistake notebook entry point.
+- Main Development Agent: integrates Stage 5.
+- Backend/API Agent: dashboard statistics endpoint.
+- Frontend Agent: homepage dashboard data binding and chart states.
 - QA/Review Agent: independent verification before commit.
 
-GitHub `main` should only receive Stage 4 after user acceptance.
+GitHub `main` should only receive Stage 5 after user acceptance.
