@@ -26,6 +26,22 @@ export type CreateQuestionResponse = {
   attemptId: string | null;
 };
 
+export type AnswerMatchKind =
+  | "normalized_text"
+  | "answer_letter"
+  | "choice_text"
+  | "selected_choice_letter"
+  | "selected_choice_text"
+  | "none";
+
+export type CreateAttemptInput = {
+  userAnswer: string;
+  selectedChoiceIndex: number | null;
+  timeSpentSeconds: number | null;
+  errorTags: string[];
+  note: string | null;
+};
+
 export type QuestionAttempt = {
   id: string;
   questionId: string;
@@ -67,6 +83,30 @@ export type QuestionDetailResponse = {
     "latestAttempt" | "attemptCount" | "incorrectAttemptCount" | "isWrong"
   >;
   attempts: QuestionAttempt[];
+};
+
+export type CreateAttemptResponse = {
+  attempt: QuestionAttempt;
+  result: {
+    isCorrect: boolean;
+    correctAnswer: string;
+    matchedBy: AnswerMatchKind;
+  };
+};
+
+export type MistakeListItem = {
+  question: Omit<
+    QuestionListItem,
+    "latestAttempt" | "attemptCount" | "incorrectAttemptCount" | "isWrong"
+  >;
+  latestWrongAttempt: QuestionAttempt;
+  attemptCount: number;
+  incorrectAttemptCount: number;
+  errorTags: string[];
+};
+
+export type MistakeListResponse = {
+  mistakes: MistakeListItem[];
 };
 
 export type ValidationResult<T> =
@@ -257,6 +297,59 @@ export function validateCreateQuestionPayload(
         source: sourceValue as QuestionSource,
       },
       ...(attempt ? { attempt } : {}),
+    },
+  };
+}
+
+export function validateCreateAttemptPayload(
+  payload: unknown,
+): ValidationResult<CreateAttemptInput> {
+  const errors: string[] = [];
+
+  if (!isRecord(payload)) {
+    return { ok: false, errors: ["request body must be a JSON object"] };
+  }
+
+  const selectedChoiceIndexValue = payload.selectedChoiceIndex;
+  let selectedChoiceIndex: number | null = null;
+
+  if (
+    selectedChoiceIndexValue !== undefined &&
+    selectedChoiceIndexValue !== null &&
+    selectedChoiceIndexValue !== ""
+  ) {
+    if (
+      typeof selectedChoiceIndexValue !== "number" ||
+      !Number.isInteger(selectedChoiceIndexValue) ||
+      selectedChoiceIndexValue < 0
+    ) {
+      errors.push("selectedChoiceIndex must be a non-negative integer or null");
+    } else {
+      selectedChoiceIndex = selectedChoiceIndexValue;
+    }
+  }
+
+  const userAnswer = readRequiredString(payload.userAnswer, "userAnswer", errors);
+  const timeSpentSeconds = readOptionalNonNegativeInteger(
+    payload.timeSpentSeconds,
+    "timeSpentSeconds",
+    errors,
+  );
+  const errorTags = readStringArray(payload.errorTags, "errorTags", errors);
+  const note = readOptionalString(payload.note, "note", errors);
+
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
+
+  return {
+    ok: true,
+    data: {
+      userAnswer,
+      selectedChoiceIndex,
+      timeSpentSeconds,
+      errorTags,
+      note,
     },
   };
 }
