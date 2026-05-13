@@ -106,7 +106,7 @@ export function AppSidebar() {
       </nav>
       <div className="border-t px-5 py-4">
         <p className="text-xs leading-5 text-muted-foreground">
-          当前推进第 3 次验收：题库列表和题目详情。截图、OCR、AI 和推荐能力仍按后续阶段推进。
+          当前推进第 4 次验收：练习记录和错题标记。截图、OCR、AI 和推荐能力仍按后续阶段推进。
         </p>
       </div>
     </aside>
